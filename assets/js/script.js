@@ -1,27 +1,24 @@
 
 const WORK_START_HOUR = 9; // 9am
-const HOURS_IN_WORK_DAY = 8; // 9am+8 = 5pm.
+const WORK_END_HOUR = 17; // 5pm
+const NOON_HOUR = 12;
 
 function displayCurrentTime() {
   let currentDateTime = moment().format('dddd, MMMM Do');
   $("#current-time-header").text(currentDateTime);
 }
 
-$(document).ready(function () {
-  displayCurrentTime();
-
-  //Create code that adds in business hours (9am - 5pm) into file for adding in hourly events to the left of the 
-  //event text box
+function displayHourRows() {
   let rowContainer = $("#row-container");
-  for (var index = 0; index <= HOURS_IN_WORK_DAY; index++) {
-    let currentHour = index + WORK_START_HOUR;
-    let row = createHourRow(currentHour, index);
+  for (var hour = WORK_START_HOUR; hour <= WORK_END_HOUR; hour++) {
+    let row = createHourRow(hour);
     rowContainer.append(row);
   }
+}
 
-  //Set styling so that business hours that have passed are greyed out;  if / else for time component 
-  //Set styling so that the current time/hour is a red color;
-  //Set styling so that hours that have not yet occured are in green 
+$(document).ready(function () {
+  displayCurrentTime();
+  displayHourRows();
 
   //Set up local storage to store persistent changes in events by timeblock
   // button.on('click', function (event) {
@@ -32,10 +29,18 @@ $(document).ready(function () {
   // })
 });
 
-function createHourRow(hour, index) {
+
+// Set styling so that business hours that have passed are greyed out;  if / else for time component 
+// Set styling so that the current time/hour is a red color;
+// Set styling so that hours that have not yet occured are in green 
+
+function createHourRow(hour) {
+  const rowIndex = hour - WORK_START_HOUR;
+  const hourRightNow = new Date().getHours();
+
   let hourLabel = document.createElement("div");
   hourLabel.className = "col-sm-1 hour text-right";
-  hourLabel.innerText = hour; // TODO: Want to add am/pm suffix.
+  hourLabel.innerText = moment().hour(hour).format("ha");
 
   let inputField = document.createElement("textarea");
   inputField.className = "col-sm-10 description";
@@ -43,7 +48,7 @@ function createHourRow(hour, index) {
   let saveButton = document.createElement("button");
   saveButton.className = "col-sm-1 saveBtn btn";
   saveButton.innerHTML = '<i class="far fa-save fa-lg"></i>';
-  saveButton.dataset.rowIndex = index;
+  saveButton.dataset.rowIndex = rowIndex;
   // saveButton.addEventListener("click", selectedAnswer);
 
   let rowElement = document.createElement("div");
