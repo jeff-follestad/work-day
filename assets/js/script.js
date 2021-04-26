@@ -35,20 +35,19 @@ $(document).ready(function () {
 // Set styling so that hours that have not yet occured are in green 
 
 function createHourRow(hour) {
-  const rowIndex = hour - WORK_START_HOUR;
-
   let hourLabel = document.createElement("div");
   hourLabel.className = "col-sm-1 hour text-right";
   hourLabel.innerText = moment().hour(hour).format("ha");
 
   let inputField = document.createElement("textarea");
   inputField.className = "col-sm-10 description";
+  inputField.innerText = getStoredEvent(hour);
 
   let saveButton = document.createElement("button");
   saveButton.className = "col-sm-1 saveBtn btn";
   saveButton.innerHTML = '<i class="far fa-save fa-lg"></i>';
-  saveButton.dataset.rowIndex = rowIndex;
-  // saveButton.addEventListener("click", selectedAnswer);
+  saveButton.dataset.hour = hour;
+  saveButton.addEventListener("click", saveButtonClicked);
 
   let rowElement = document.createElement("div");
   rowElement.className = "row calendar-event " + getRowBackgroundClass(hour);
@@ -56,6 +55,35 @@ function createHourRow(hour) {
   rowElement.appendChild(inputField);
   rowElement.appendChild(saveButton);
   return rowElement;
+}
+
+function saveButtonClicked() {
+  let hourToSaveFor = $(this).data("hour");
+  let eventText = $(this).siblings(".description").val();
+  setStoredEvent(hourToSaveFor, eventText);
+}
+
+function getStoredEvents() {
+  let currentStoredAgenda = localStorage.getItem("work-day-agenda");
+  if (currentStoredAgenda == null) {
+    return {};
+  } else {
+    return JSON.parse(currentStoredAgenda);
+  }
+}
+
+function getStoredEvent(hour) {
+  let event = getStoredEvents()[hour];
+  if (event == undefined) {
+    return "";
+  }
+  return event;
+}
+
+function setStoredEvent(hour, event) {
+  let storedEvents = getStoredEvents();
+  storedEvents[hour] = event;
+  localStorage.setItem("work-day-agenda", JSON.stringify(storedEvents));
 }
 
 function getRowBackgroundClass(hour) {
