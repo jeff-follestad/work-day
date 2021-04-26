@@ -36,7 +36,6 @@ $(document).ready(function () {
 
 function createHourRow(hour) {
   const rowIndex = hour - WORK_START_HOUR;
-  const hourRightNow = new Date().getHours();
 
   let hourLabel = document.createElement("div");
   hourLabel.className = "col-sm-1 hour text-right";
@@ -52,9 +51,20 @@ function createHourRow(hour) {
   // saveButton.addEventListener("click", selectedAnswer);
 
   let rowElement = document.createElement("div");
-  rowElement.className = "row calendar-event";
+  rowElement.className = "row calendar-event " + getRowBackgroundClass(hour);
   rowElement.appendChild(hourLabel);
   rowElement.appendChild(inputField);
   rowElement.appendChild(saveButton);
   return rowElement;
+}
+
+function getRowBackgroundClass(hour) {
+  let currentHour = new Date().getHours();
+  if (hour > currentHour) {
+    return "future";
+  } else if (hour < currentHour) {
+    return "past";
+  } else {
+    return "present";
+  }
 }
