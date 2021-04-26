@@ -23,15 +23,15 @@ $(document).ready(function () {
 
 function createHourRow(hour) {
   let hourLabel = document.createElement("div");
-  hourLabel.className = "col-sm-1 hour text-right";
+  hourLabel.className = "col-sm-3 col-md-2 col-lg-1 hour text-right";
   hourLabel.innerText = moment().hour(hour).format("ha");
 
   let inputField = document.createElement("textarea");
-  inputField.className = "col-sm-10 description";
+  inputField.className = "col description";
   inputField.innerText = getStoredEvent(hour);
 
   let saveButton = document.createElement("button");
-  saveButton.className = "col-sm-1 saveBtn btn";
+  saveButton.className = "col-sm-3 col-md-2 col-lg-1 saveBtn btn";
   saveButton.innerHTML = '<i class="far fa-save fa-lg"></i>';
   saveButton.dataset.hour = hour;
   saveButton.addEventListener("click", saveButtonClicked);
